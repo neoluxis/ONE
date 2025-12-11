@@ -4,7 +4,7 @@ import { getDefaultBackend } from "@scripts/utils/getDefaultBackend";
 import { copyToClipboard } from "@scripts/utils/copy";
 import filterObject from "@scripts/utils/filterObject";
 
-const UniversalExtendConfig = ["isShowHost", "HTTPHeaders"];
+const UniversalExtendConfig = ["isShowHost", "HTTPHeaders", "FilterKeyword"];
 
 class SubURLGenerator extends HTMLElement {
     Endpoints: EndpointPrototype[] = JSON.parse(this.dataset.endpoints);
@@ -18,6 +18,13 @@ class SubURLGenerator extends HTMLElement {
         customElements.whenDefined("data-input").then(() => {
             this.Elements.Config.Basic.Backend.setDetail(`${this.Elements.Config.Basic.Backend.getDetail()} (${this.defaultBackend})`);
             console.info("[k-sub-url-generator] data-input registration detected, default backend modified")
+            // set default filter keywords (slash-separated)
+            try {
+                this.Elements.Config.Basic.FilterKeyword.set("电报/官网/失联/到期/流量");
+                console.info("[k-sub-url-generator] default FilterKeyword set")
+            } catch (e) {
+                // ignore if element not present
+            }
         })
     }
 
@@ -59,6 +66,7 @@ class SubURLGenerator extends HTMLElement {
                 SubURL: this.querySelector("data-input#SubURL") as DataInput,
                 Backend: this.querySelector("data-input#Backend") as DataInput,
                 Endpoint: this.querySelector("data-input#Endpoint") as DataInput,
+                FilterKeyword: this.querySelector("data-input#FilterKeyword") as DataInput,
                 isShowHost: this.querySelector("data-input#isShowHost") as DataInput,
                 HTTPHeaders: this.querySelector("data-input#HTTPHeaders") as DataInput,
             },
@@ -88,6 +96,7 @@ class SubURLGenerator extends HTMLElement {
                 SubURL: this.Elements.Config.Basic.SubURL.get() as string,
                 Backend: (this.Elements.Config.Basic.Backend.get() || this.defaultBackend) as string,
                 Endpoint: this.Elements.Config.Basic.Endpoint.get() as string,
+                FilterKeyword: (this.Elements.Config.Basic.FilterKeyword.get() || "") as string,
                 isShowHost: this.Elements.Config.Basic.isShowHost.get() as boolean,
                 HTTPHeaders: JSON.stringify(JSON.parse(String(this.Elements.Config.Basic.HTTPHeaders.get()) || "{}")) as string,
             },
@@ -148,7 +157,8 @@ class SubURLGenerator extends HTMLElement {
             "isSSUoT": "ss_uot",
             "ForcedWS0RTT": "forced_ws0rtt",
             "isShowHost": "show_host",
-            "HTTPHeaders": "http_headers"
+            "HTTPHeaders": "http_headers",
+            "FilterKeyword": "filter_keyword"
         }
 
         for (let [key, value] of Object.entries({

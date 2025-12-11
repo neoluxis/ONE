@@ -11,6 +11,30 @@ export async function onRequest (context) {
         JSON.parse(URLObject.searchParams.get("http_headers")),
     );
 
+    // filter proxies by keywords if provided. keywords are slash-separated.
+    const filterKeywordRaw = URLObject.searchParams.get("filter_keyword") || "";
+    if (filterKeywordRaw.trim().length > 0) {
+        const keywords = filterKeywordRaw.split("/").map(k => k.trim()).filter(k => !!k).map(k => k.toLowerCase());
+        if (keywords.length > 0) {
+            Proxies = Proxies.filter(p => {
+                try {
+                    const name = (p.__Remark || "").toString().toLowerCase();
+                    const source = (p.__Source || "").toString().toLowerCase();
+                    const host = ((p.Hostname || "") + ":" + (p.Port || "")).toString().toLowerCase();
+                    for (let kw of keywords) {
+                        if (kw.length === 0) continue;
+                        if (name.includes(kw) || source.includes(kw) || host.includes(kw)) {
+                            return false; // exclude this proxy
+                        }
+                    }
+                } catch (e) {
+                    return true;
+                }
+                return true;
+            })
+        }
+    }
+
     // a javascript object !!! not YAML !!!
     let SingBoxConfigObject = await getSingBoxConfig (
         Proxies,
