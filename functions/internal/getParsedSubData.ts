@@ -176,6 +176,33 @@ async function ParseSubData (SubURL: SubURL, EdgeSubDB, RequestHeaders) : Promis
         }
     }
     
+    // attach source label for each parsed proxy so callers can know which
+    // subscription/config it comes from. Prefer the subscription filename
+    // (from Content-Disposition) if available, otherwise derive from the
+    // subscription URL (hostname[/last-path-segment]) or fall back to the
+    // raw SubURL string.
+    let configName: string;
+    if (SubscriptionUserInfo && SubscriptionUserInfo.name) {
+        configName = SubscriptionUserInfo.name;
+    } else {
+        try {
+            const u = new URL(SubURL as string);
+            const last = u.pathname.split("/").filter(Boolean).slice(-1)[0];
+            configName = last ? `${u.hostname}/${last}` : u.hostname;
+        } catch (e) {
+            configName = SubURL as string;
+        }
+    }
+
+    ParsedSubData = ParsedSubData.map((p) => {
+        try {
+            p.__Source = configName;
+        } catch (e) {
+            // ignore if proxy object is not plain
+        }
+        return p;
+    });
+
     return {
         data: ParsedSubData,
         SubscriptionUserInfo,

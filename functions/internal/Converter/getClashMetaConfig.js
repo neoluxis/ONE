@@ -43,6 +43,14 @@ export async function getClashMetaConfig (
     Proxies = Proxies.map(i => {
         if (Dumper.__validate(i)) {
             i.Hostname = i.Hostname.replace(/(^\[|\]$)/g, "");
+            // if parser provided a source label, prefix it to the remark
+            try {
+                if (i.__Source) {
+                    i.__Remark = `${i.__Source} - ${i.__Remark}`
+                }
+            } catch (e) {
+                // ignore
+            }
             return i;
         }
     }).filter(i => !!i);
