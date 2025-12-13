@@ -20,7 +20,7 @@ class SubURLGenerator extends HTMLElement {
             console.info("[k-sub-url-generator] data-input registration detected, default backend modified")
             // set default filter keywords (slash-separated)
             try {
-                this.Elements.Config.Basic.FilterKeyword.set("电报/官网/失联/到期/流量");
+                this.Elements.Config.Basic.FilterKeyword.set("套餐/重置/剩余/到期/订阅/群/账户/流量/有效期/时间/官网/失联/余额/电报/官网");
                 console.info("[k-sub-url-generator] default FilterKeyword set")
             } catch (e) {
                 // ignore if element not present
