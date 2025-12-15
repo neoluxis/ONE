@@ -18,9 +18,9 @@ class SubURLGenerator extends HTMLElement {
         customElements.whenDefined("data-input").then(() => {
             this.Elements.Config.Basic.Backend.setDetail(`${this.Elements.Config.Basic.Backend.getDetail()} (${this.defaultBackend})`);
             console.info("[k-sub-url-generator] data-input registration detected, default backend modified")
-            // set default filter keywords (slash-separated)
+            // set default filter keywords as regex pattern (pipe-separated alternatives)
             try {
-                this.Elements.Config.Basic.FilterKeyword.set("套餐/重置/剩余/到期/订阅/群/账户/流量/有效期/时间/官网/失联/余额/电报/官网");
+                this.Elements.Config.Basic.FilterKeyword.set("套餐|重置|剩余|到期|订阅|群|账户|流量|有效期|时间|官网|失联|余额|电报");
                 console.info("[k-sub-url-generator] default FilterKeyword set")
             } catch (e) {
                 // ignore if element not present

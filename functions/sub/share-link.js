@@ -11,27 +11,28 @@ export async function onRequest (context, isBase64 = false) {
         URLObject.searchParams.get("show_host") === "true",
         JSON.parse(URLObject.searchParams.get("http_headers")),
     );
-    // filter proxies by keywords if provided. keywords are slash-separated.
+    // filter proxies by regex pattern if provided. pattern uses pipe-separated alternatives (e.g., pattern1|pattern2)
     const filterKeywordRaw = URLObject.searchParams.get("filter_keyword") || "";
     if (filterKeywordRaw.trim().length > 0) {
-        const keywords = filterKeywordRaw.split("/").map(k => k.trim()).filter(k => !!k).map(k => k.toLowerCase());
-        if (keywords.length > 0) {
+        try {
+            const filterRegex = new RegExp(filterKeywordRaw, "i"); // case-insensitive regex
             Proxies = Proxies.filter(p => {
                 try {
-                    const name = (p.__Remark || "").toString().toLowerCase();
-                    const source = (p.__Source || "").toString().toLowerCase();
-                    const host = ((p.Hostname || "") + ":" + (p.Port || "")).toString().toLowerCase();
-                    for (let kw of keywords) {
-                        if (kw.length === 0) continue;
-                        if (name.includes(kw) || source.includes(kw) || host.includes(kw)) {
-                            return false; // exclude this proxy
-                        }
+                    const name = (p.__Remark || "").toString();
+                    const source = (p.__Source || "").toString();
+                    const host = ((p.Hostname || "") + ":" + (p.Port || "")).toString();
+                    // exclude if any field matches the regex pattern
+                    if (filterRegex.test(name) || filterRegex.test(source) || filterRegex.test(host)) {
+                        return false; // exclude this proxy
                     }
                 } catch (e) {
                     return true;
                 }
                 return true;
             })
+        } catch (e) {
+            console.warn("[share-link filter] Invalid regex pattern:", filterKeywordRaw, e);
+            // if regex is invalid, keep all proxies
         }
     }
     let Dumper = new ShareLinkDumper();
