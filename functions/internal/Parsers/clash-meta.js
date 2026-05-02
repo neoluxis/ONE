@@ -202,6 +202,24 @@ export class ClashMetaParser {
             }
         }
     }
+
+    anytls (Obj) {
+        return {
+            __Type: "anytls",
+            __Remark: Obj.name,
+            Hostname: Obj.server,
+            Port: Obj.port,
+            Auth: Obj.password,
+            Query: {
+                sni: Obj.servername || Obj.sni,
+                fp: Obj["client-fingerprint"],
+                alpn: Obj.alpn ? Obj.alpn.join(",") : undefined,
+                insecure: Obj["skip-cert-verify"] ? 1 : 0,
+                idle_session_check_interval: Obj["idle-session-check-interval"],
+                idle_session_timeout: Obj["idle-session-timeout"],
+            }
+        }
+    }
 }
 
 function __searchParamsMapper (searchParams) {

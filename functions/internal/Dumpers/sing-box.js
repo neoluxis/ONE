@@ -265,6 +265,30 @@ export default class Dumper {
 
         }
     }
+
+    anytls (ANYTLS) {
+        return {
+            type: "anytls",
+            tag: ANYTLS.__Remark,
+
+            server: ANYTLS.Hostname,
+            server_port: ANYTLS.Port,
+            password: ANYTLS.Auth,
+            idle_session_check_interval: ANYTLS.Query.idle_session_check_interval,
+            idle_session_timeout: ANYTLS.Query.idle_session_timeout,
+
+            tls: {
+                enabled: true,
+                server_name: ANYTLS.Query.sni,
+                insecure: this.config.SkipCertVerify,
+                alpn: ANYTLS.Query.alpn ? [ ANYTLS.Query.alpn ] : undefined,
+                utls: {
+                    enabled: !!ANYTLS.Query.fp,
+                    fingerprint: ANYTLS.Query.fp
+                }
+            }
+        }
+    }
 }
 function __genRealityConfig (URIObject) {
     return (URIObject.Query.security === "reality") ? {

@@ -191,4 +191,22 @@ export class SingBoxParser {
             }
         }
     }
+
+    anytls (Obj) {
+        return {
+            __Type: "anytls",
+            __Remark: Obj.tag,
+            Hostname: Obj.server,
+            Port: Obj.server_port,
+            Auth: Obj.password,
+            Query: {
+                sni: Obj.tls && Obj.tls.server_name,
+                fp: Obj.tls && Obj.tls.utls && Obj.tls.utls.enabled ? Obj.tls.utls.fingerprint : undefined,
+                alpn: Obj.tls && Obj.tls.alpn ? Obj.tls.alpn.join(",") : undefined,
+                insecure: Obj.tls && Obj.tls.insecure ? 1 : 0,
+                idle_session_check_interval: Obj.idle_session_check_interval,
+                idle_session_timeout: Obj.idle_session_timeout,
+            }
+        }
+    }
 }

@@ -191,6 +191,19 @@ export class ShareLinkParser {
         }
         return TROJAN;
     }
+
+    anytls (URI) {
+        const URIObject = new URL(URI);
+
+        return {
+            __Type: "anytls",
+            __Remark: decodeURIComponent(URIObject.hash.replace(/^#/, "")) || URIObject.host,
+            Auth: decodeURIComponent(URIObject.username || URIObject.password),
+            Hostname: URIObject.hostname,
+            Port: parseInt(URIObject.port),
+            Query: __searchParamsMapper(URIObject.searchParams)
+        }
+    }
 }
 
 function __searchParamsMapper (searchParams) {

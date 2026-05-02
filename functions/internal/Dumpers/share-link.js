@@ -68,6 +68,10 @@ export class ShareLinkDumper {
     trojan (Obj) {
         return `trojan://${Obj.Auth}@${Obj.Hostname}:${Obj.Port}/?${URLQueryWrapper(Obj.Query)}#${encodeURIComponent(Obj.__Remark)}`
     }
+
+    anytls (Obj) {
+        return `anytls://${encodeURIComponent(Obj.Auth)}@${Obj.Hostname}:${Obj.Port}/?${URLQueryWrapper(Obj.Query)}#${encodeURIComponent(Obj.__Remark)}`
+    }
 }
 
 function URLQueryWrapper (Obj) {

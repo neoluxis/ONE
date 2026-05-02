@@ -246,6 +246,22 @@ export default class Dumper {
             "skip-cert-verify": this.config.SkipCertVerify,
         }
     }
+
+    anytls (ANYTLS) {
+        return {
+            name: ANYTLS.__Remark,
+            type: "anytls",
+            server: ANYTLS.Hostname,
+            port: ANYTLS.Port,
+            password: ANYTLS.Auth,
+            servername: ANYTLS.Query.sni,
+            alpn: ANYTLS.Query.alpn ? [ ANYTLS.Query.alpn ] : undefined,
+            "client-fingerprint": ANYTLS.Query.fp || this.config.ClientFingerprint,
+            "skip-cert-verify": this.config.SkipCertVerify,
+            "idle-session-check-interval": ANYTLS.Query.idle_session_check_interval,
+            "idle-session-timeout": ANYTLS.Query.idle_session_timeout,
+        }
+    }
 }
 
 

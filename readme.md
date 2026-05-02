@@ -71,6 +71,7 @@
   | Vless        | ✅    | ☑️        | 未經完全測試                          |
   | Shadowsocks  | ✅    | ✅        |  |
   | Trojan       | ✅    | ✅        |                                    |
+  | AnyTLS       | ✅    | ✅        |                                    |
   | WireGuard    | 🚫    | -        | 似乎沒有通用的 ShareLink 格式         |
   | ShadowsocksR | 🚫    | -        | 暫無計劃實現                          |
   | SSH          | 🚫    | -        | 暫無計劃實現                          |
